@@ -1,42 +1,57 @@
-import { UsersRepository } from "@/repositories/users-repository";
 import { hash } from "bcryptjs";
-import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
-import { User } from "@prisma/client";
+import { Org } from "@prisma/client";
+import { OrgsRepository } from "@/repositories/orgs-repository";
+import { OrgAlreadyExistsError } from "./errors/org-already-exists-error";
 
 interface RegisterUseCaseRequest {
-  name: string;
+  ownerName: string;
   email: string;
+  cep: string;
+  adress: string;
+  city: string;
+  whatsapp: string;
   password: string;
 }
 
 interface RegisterUseCaseResponse {
-  user: User;
+  org: Org;
 }
 
 export class RegisterUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private orgsRepository: OrgsRepository) {}
 
   async execute({
-    name,
+    ownerName,
     email,
+    cep,
+    adress,
+    city,
+    whatsapp,
     password,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const password_hash = await hash(password, 6);
 
-    const userWithSameEmail = await this.usersRepository.findByEmail(email);
+    const orgWithSameEmail = await this.orgsRepository.findByEmail(email);
+    const orgWithSameAdress = await this.orgsRepository.findByAdress(adress);
+    const orgWithSameWhatsapp =
+      await this.orgsRepository.findByWhatsapp(whatsapp);
 
-    if (userWithSameEmail) {
-      throw new UserAlreadyExistsError();
+    if (orgWithSameEmail || orgWithSameAdress || orgWithSameWhatsapp) {
+      throw new OrgAlreadyExistsError();
     }
 
-    const user = await this.usersRepository.create({
-      name,
+    const org = await this.orgsRepository.create({
+      owner_name: ownerName,
       email,
+      cep,
+      adress,
+      city,
+      whatsapp,
       password_hash,
     });
 
     return {
-      user,
+      org,
     };
   }
 }

@@ -1,13 +1,15 @@
-import fastify from "fastify";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
+import multer from "fastify-multer";
 import { ZodError } from "zod";
 import { env } from "./env";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
-import { usersRoutes } from "./http/controllers/users/routes";
-import { gymsRoutes } from "./http/controllers/gyms/routes";
-import { checkInsRoutes } from "./http/controllers/check-ins/routes";
+import { orgsRoutes } from "./http/controllers/orgs/routes";
+import { petsRoutes } from "./http/controllers/pets/routes";
 
 export const app = fastify();
+
+app.register(multer.contentParser);
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
@@ -22,9 +24,9 @@ app.register(fastifyJwt, {
 
 app.register(fastifyCookie);
 
-app.register(usersRoutes);
-app.register(gymsRoutes);
-app.register(checkInsRoutes);
+app.register(orgsRoutes);
+
+app.register(petsRoutes);
 
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
@@ -35,8 +37,7 @@ app.setErrorHandler((error, _request, reply) => {
 
   if (env.NODE_ENV !== "production") {
     console.log(error);
-  } else {
-    //TODO: Here we should log to an external tool like DataDog/NewRelic/Sentry
   }
+
   return reply.status(500).send({ message: "Internal server error." });
 });

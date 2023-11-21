@@ -14,8 +14,7 @@ function generateDatabaseURL(schema: string) {
 
   const url = new URL(process.env.DATABASE_URL);
 
-  url.searchParams.set("schema", schema); //a parte schema=public da url da DATABASE_URL é chamada searchParams, com isso, transformamos o schema
-  //da url, no schema que queremos
+  url.searchParams.set("schema", schema);
 
   return url.toString();
 }

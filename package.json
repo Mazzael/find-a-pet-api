@@ -1,7 +1,7 @@
 {
-  "name": "03-api-solid",
+  "name": "find-a-pet-api",
   "version": "1.0.0",
-  "description": "Gympass Style App.",
+  "description": "Find a Pet App.",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "@rocketseat/eslint-config": "2.1.0",
     "@types/bcryptjs": "2.4.4",
+    "@types/multer": "1.4.10",
     "@types/node": "20.8.2",
     "@types/supertest": "2.0.15",
     "eslint": "8.50.0",
@@ -43,6 +44,7 @@
     "dayjs": "1.11.10",
     "dotenv": "16.3.1",
     "fastify": "4.23.2",
+    "fastify-multer": "2.0.3",
     "zod": "3.22.4"
   }
 }
